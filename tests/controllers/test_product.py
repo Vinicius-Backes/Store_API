@@ -5,6 +5,7 @@ from tests.factories import product_data
 from fastapi import status
 
 
+@pytest.mark.asyncio
 async def test_controller_create_should_return_success(client, products_url):
     response = await client.post(products_url, json=product_data())
 
@@ -23,6 +24,7 @@ async def test_controller_create_should_return_success(client, products_url):
     }
 
 
+@pytest.mark.asyncio
 async def test_controller_get_should_return_success(
     client, products_url, product_inserted
 ):
@@ -43,6 +45,7 @@ async def test_controller_get_should_return_success(
     }
 
 
+@pytest.mark.asyncio
 async def test_controller_get_should_return_not_found(client, products_url):
     response = await client.get(f"{products_url}4fd7cd35-a3a0-4c1f-a78d-d24aa81e7dca")
 
