@@ -1,12 +1,13 @@
 import pytest
+import pytest_asyncio
 import asyncio
-
+from typing import AsyncGenerator
 from uuid import UUID
+from httpx import AsyncClient
 from store.db.mongo import db_client
 from store.schemas.product import ProductIn, ProductUpdate
 from store.usecases.product import product_usecase
 from tests.factories import product_data, products_data
-from httpx import AsyncClient
 
 
 @pytest.fixture(scope="session")
@@ -21,7 +22,7 @@ def mongo_client():
     return db_client.get()
 
 
-@pytest.fixture(autouse=True)
+@pytest_asyncio.fixture(autouse=True)
 async def clear_collections(mongo_client):
     yield
     collection_names = await mongo_client.get_database().list_collection_names()
@@ -33,7 +34,7 @@ async def clear_collections(mongo_client):
 
 
 @pytest.fixture
-async def client() -> AsyncClient:
+async def client() -> AsyncGenerator[AsyncClient, None]:
     from store.main import app
 
     async with AsyncClient(app=app, base_url="http://test") as ac:
